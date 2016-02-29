@@ -78,8 +78,32 @@
  
 ## 3.5 ucore系统调用分析
  1. ucore的系统调用中参数传递代码分析。
+ 答：中断帧trapframe用tf_regs存储了edx/ecx/ebx/edi/esi五个寄存器的值，发生系统调用时，就从tf_regs里面取出这些值作为参数传递；系统调用的序号则是从tf_regs存储的eax寄存器的值中取出。因此ucore的系统调用中参数主要靠edx/ecx/ebx/edi/esi/eax六个寄存器传递，系统调用返回值时eax。
  1. 以getpid为例，分析ucore的系统调用中返回结果的传递代码。
+ 答：sys_getpid()返回的是当前进程的进程号，返回值在syscall()中被赋值给eax在栈中的位置，在中断退出时，该值被弹入eax并返回给用户态程序。
  1. 以ucore lab8的answer为例，分析ucore 应用的系统调用编写和含义。
+ 答：[SYS_exit]              退出当前进程
+    [SYS_fork]              创建子进程
+    [SYS_wait]              等待当前进程结束
+    [SYS_exec]              当前进程中加载其他程序
+    [SYS_yield]             
+    [SYS_kill]              
+    [SYS_getpid]            返回当前进程pid
+    [SYS_putc]              
+    [SYS_pgdir]             
+    [SYS_gettime]           获得系统时间
+    [SYS_lab6_set_priority] 设置优先级
+    [SYS_sleep]             睡眠一段时间
+    [SYS_open]              打开文件
+    [SYS_close]             关闭文件
+    [SYS_read]              读取文件
+    [SYS_write]             写入文件
+    [SYS_seek]              
+    [SYS_fstat]             
+    [SYS_fsync]             
+    [SYS_getcwd]            
+    [SYS_getdirentry]       
+    [SYS_dup] 
  1. 以ucore lab8的answer为例，尝试修改并运行ucore OS kernel代码，使其具有类似Linux应用工具`strace`的功能，即能够显示出应用程序发出的系统调用，从而可以分析ucore应用的系统调用执行过程。
  
 ## 3.6 请分析函数调用和系统调用的区别
