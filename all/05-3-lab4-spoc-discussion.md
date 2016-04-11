@@ -7,14 +7,40 @@
 ### 13.1 总体介绍
 
 (1) ucore的线程控制块数据结构是什么？
+>线程控制块TCB是由proc_struct这样一个数据结构维护,主要包括如下信息:
+enum proc_state state;                      // Process state
+int pid;                                    // Process ID
+int runs;                                   // the running times of Proces
+uintptr_t kstack;                           // Process kernel stack
+volatile bool need_resched;                 // bool value: need to be rescheduled to release CPU?
+struct proc_struct *parent;                 // the parent process
+struct mm_struct *mm;                       // Process's memory management field
+struct context context;                     // Switch here to run process
+struct trapframe *tf;                       // Trap frame for current interrupt
+uintptr_t cr3;                              // CR3 register: the base addr of Page Directroy Table(PDT)
+uint32_t flags;                             // Process flag
+char name[PROC_NAME_LEN + 1];               // Process name
+list_entry_t list_link;                     // Process link list 
+list_entry_t hash_link;                     // Process hash list
+
+其中,mm_struct结构如下:
+list_entry_t mmap_list
+struct vma_struct * mmap_cache
+pde_t * pgdir
+int map_count
+void * sm_priv
 
 ### 13.2 关键数据结构
 
 (2) 如何知道ucore的两个线程同在一个进程？
+>同一个进程共享一块内存空间和页表,因此可以比较两个线程的cr3和mm_struct.
 
 (3) context和trapframe分别在什么时候用到？
+>现成切换时用到context,主要是一堆寄存器;发生中断/异常和系统调用时用到trapframe.
 
 (4) 用户态或内核态下的中断处理有什么区别？在trapframe中有什么体现？
+>用户态下中断处理涉及特权级切换(从用户态到内核态),内核态下中断处理不涉及特权级切换.
+特权级切换时trapframe要多压入ss esp进行栈切换.
 
 ### 13.3 执行流程
 
@@ -24,15 +50,19 @@ tf.tf_eip = (uint32_t) kernel_thread_entry;
 /kern-ucore/arch/i386/init/entry.S
 /kern/process/entry.S
 ```
+>pushl %edx;将trapframe中的eip指向函数入口地址来完成跳转.
 
 (6)内核线程的堆栈初始化在哪？
 ```
 tf和context中的esp
 ```
+>tf和context中的esp
 
 (7)fork()父子进程的返回值是不同的。这在源代码中的体现中哪？
+>父进程返回子进程pid,ret = proc->pid;子进程返回0,proc->tf->tf_regs.reg_eax = 0.
 
 (8)内核线程initproc的第一次执行流程是什么样的？能跟踪出来吗？
+>
 
 ## 小组练习与思考题
 
