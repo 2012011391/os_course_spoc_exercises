@@ -56,7 +56,8 @@ if options.solve == True:
     print '** Solutions **\n'
     if options.policy == 'SJF':
 	thetime = 0
-	joblist.sort(key=lambda x:x[1])
+	joblist.sort(key=lambda joblist : joblist[1])
+        #将job列表按照执行时间排序，实现每次取都是执行时间最短的job
 	print 'Execution trace:'
 	#YOUR CODE
 	 
