@@ -57,7 +57,16 @@
 
 2. （扩展练习）请在lab7-answer中分析
   -  cvp->count含义是什么？cvp->count是否可能<0, 是否可能>1？请举例或说明原因。
+>
+cvp->count：等待该条件变量的进程数。 
+cvp->count不可能小于0，因为cvp->count永远是先加后减。
+cvp->count有可能大于1，因为可能有多个进程等待该条件变量。 
+
   -  cvp->owner->next_count含义是什么？cvp->owner->next_count是否可能<0, 是否可能>1？请举例或说明原因。
+>
+cvp->owner->next_count：发出signal进入睡眠的进程数。 
+cvp->owner->next_count不可能小于0，因为cvp->owner->next_count永远是先加后减。 
+不可能大于1，因为一个进程发出signal让另一个进程被唤醒执行完后又会立刻回到自己，使得cvp->owner->next_count--。
   -  目前的lab7-answer中管程的实现是Hansen管程类型还是Hoare管程类型？请在lab7-answer中实现另外一种类型的管程。
   -  现在的管程（条件变量）实现是否有bug?
 
