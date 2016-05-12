@@ -1,7 +1,7 @@
 #coding=utf-8
 #!/usr/bin/env python
 
-#基本明白了信号量 管程 条件变量原理，可是自己不会实现，看懂了这份上面同学提#交的代码。
+#基本明白了信号量 管程 条件变量原理，可是自己不会实现，看懂了这份上面同学提交的代码。
 
 import threading  
 import time  
